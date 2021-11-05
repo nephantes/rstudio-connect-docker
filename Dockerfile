@@ -73,6 +73,8 @@ RUN apt-get update --fix-missing \
     && rm -rf rstudio-connect.deb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+RUN apt-get update 
+RUN apt-get install -y libpng-dev
 
 EXPOSE 3939/tcp
 ENV RSC_LICENSE ""
@@ -80,7 +82,6 @@ ENV RSC_LICENSE_SERVER ""
 COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
 VOLUME ["/data"]
 
-RUN apt-get update 
 
 #ENTRYPOINT ["tini", "--"]
 #CMD ["/usr/local/bin/startup.sh"]
