@@ -83,5 +83,5 @@ COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
 VOLUME ["/data"]
 
 
-#ENTRYPOINT ["tini", "--"]
-#CMD ["/usr/local/bin/startup.sh"]
+ENTRYPOINT ["tini", "--"]
+CMD ["/usr/local/bin/startup.sh"]
