@@ -1,6 +1,8 @@
+ARG BASE_IMAGE=rstudio/r-base
+FROM ${BASE_IMAGE}:bionic
+
 ARG R_VERSION=4.2.0
-FROM rstudio/r-base:${R_VERSION}-bionic
-LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+ARG OS_IDENTIFIER=ubuntu-1804
 
 # Locale configuration --------------------------------------------------------#
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
