@@ -1,4 +1,4 @@
-ARG R_VERSION=4.2.2
+ARG R_VERSION=4.2.0
 FROM rstudio/r-base:${R_VERSION}-bionic
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
