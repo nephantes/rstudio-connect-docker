@@ -1,4 +1,4 @@
-ARG R_VERSION=4.1.1
+ARG R_VERSION=4.2.3
 FROM rstudio/r-base:${R_VERSION}-bionic
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
@@ -28,7 +28,7 @@ RUN apt-get update --fix-missing \
 
 # Add another R version -------------------------------------------------------#
 
-ARG R_VERSION_ALT=4.1.0
+ARG R_VERSION_ALT=4.2
 RUN apt-get update -qq && \
     curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
     DEBIAN_FRONTEND=noninteractive gdebi --non-interactive r-${R_VERSION_ALT}_1_amd64.deb && \
@@ -64,19 +64,22 @@ COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
 # Download RStudio Connect -----------------------------------------------------#
-ARG RSC_VERSION=2021.10.0
+ARG RSC_VERSION=2023.03.0
 SHELL [ "/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update --fix-missing \
-    && RSC_VERSION_URL=`echo -n "${RSC_VERSION}" | sed 's/+/%2B/g'` \
-    && curl -L -o rstudio-connect.deb https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/')/rstudio-connect_${RSC_VERSION_URL}~ubuntu18_amd64.deb \
+    && RSC_VERSION_URL=$(echo -n "${RSC_VERSION}" | sed 's/+/%2B/g') \
+    && curl -L -o rstudio-connect.deb "https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/')/rstudio-connect_${RSC_VERSION_URL}~ubuntu18_amd64.deb"  \
+    && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
+    && dpkg-sig --verify rstudio-connect.deb \
     && gdebi -n rstudio-connect.deb \
-    && rm -rf rstudio-connect.deb \
+    && rm -rf rstudio-connect.deb \ 
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* # buildkit
+
 RUN apt-get update 
 RUN apt-get install -y libpng-dev libxml2-dev libglpk-dev
 
-EXPOSE 3939/tcp
+EXPOSE map[3939/tcp:{}]
 ENV RSC_LICENSE ""
 ENV RSC_LICENSE_SERVER ""
 COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
