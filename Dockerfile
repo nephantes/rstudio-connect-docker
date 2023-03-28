@@ -1,5 +1,5 @@
 ARG R_VERSION=4.2.3
-FROM rstudio/r-base:${R_VERSION}-bionic
+FROM rstudio/r-base:4.2.3-bionic
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
